@@ -116,6 +116,9 @@ namespace Api
 
                 };
             });
+            services.AddAuthorization(opt => {
+              opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Api.Models
 {
-    public class ApplicationUser : IdentityUser
+    public class AppRole : IdentityRole<int>
     {
-        public string NickName { get; set; }
         public ICollection<AppUserRole> UserRoles { get; set; }
     }
 }
