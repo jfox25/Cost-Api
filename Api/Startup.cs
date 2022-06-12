@@ -42,45 +42,45 @@ namespace Api
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "Expense Api",
-                    Description = "API for expenses",
-                    Contact = new OpenApiContact
-                    {
-                        Name = "James Fox",
-                        Email = "jimmyfox00@gmail.com",
-                    }
-                });
-                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Description = "Please insert token",
-                    Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-                    BearerFormat = "JWT",
-                    Scheme = "bearer"
-                });
-                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement{
-                {
-                    new OpenApiSecurityScheme{
-                        Reference = new OpenApiReference {
-                            Type=ReferenceType.SecurityScheme,
-                            Id="Bearer"
-                        }
-                    },
-                    new string[]{}
-                }
+            // services.AddSwaggerGen(c =>
+            // {
+            //     c.SwaggerDoc("v1", new OpenApiInfo
+            //     {
+            //         Version = "v1",
+            //         Title = "Expense Api",
+            //         Description = "API for expenses",
+            //         Contact = new OpenApiContact
+            //         {
+            //             Name = "James Fox",
+            //             Email = "jimmyfox00@gmail.com",
+            //         }
+            //     });
+            //     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            //     {
+            //         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            //         Description = "Please insert token",
+            //         Name = "Authorization",
+            //         Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+            //         BearerFormat = "JWT",
+            //         Scheme = "bearer"
+            //     });
+            //     c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement{
+            //     {
+            //         new OpenApiSecurityScheme{
+            //             Reference = new OpenApiReference {
+            //                 Type=ReferenceType.SecurityScheme,
+            //                 Id="Bearer"
+            //             }
+            //         },
+            //         new string[]{}
+            //     }
 
-              });
+            //   });
 
-                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
+            //     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            //     c.IncludeXmlComments(xmlPath);
+            // });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
@@ -91,6 +91,7 @@ namespace Api
 
             });
             services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApiContext>()
             .AddDefaultTokenProviders();
 

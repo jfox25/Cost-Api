@@ -6,6 +6,5 @@ namespace Api.Models
     public class ApplicationUser : IdentityUser
     {
         public string NickName { get; set; }
-        public ICollection<AppUserRole> UserRoles { get; set; }
     }
 }
