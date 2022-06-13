@@ -58,44 +58,46 @@ namespace Api.Controllers
         return new UserDto
         {
             Username = user.UserName,
-            Token =  _tokenService.CreateToken(user),
+            Token =  await _tokenService.CreateToken(user),
             NickName = user.NickName
         };
         }
-        [Authorize(Policy = "RequireAdminRole")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("register/admin")]
         public async Task<ActionResult<UserDto>> RegisterAdmin(RegisterUserDTO registerDto)
         {
-        if (await UserExists(registerDto.Email)) return BadRequest("Email is already being used.");
+            if (!User.IsInRole("Admin")) return Unauthorized();
+          
+            if (await UserExists(registerDto.Email)) return BadRequest("Email is already being used.");
 
-        var user = new ApplicationUser
-        {
-            UserName = registerDto.Email.ToLower(),
-            NickName = registerDto.NickName
-        };
+            var user = new ApplicationUser
+            {
+                UserName = registerDto.Email.ToLower(),
+                NickName = registerDto.NickName
+            };
 
-        IdentityResult result = await _userManager.CreateAsync(user, registerDto.Password);
-        if (!result.Succeeded) return BadRequest(result.Errors);
+            IdentityResult result = await _userManager.CreateAsync(user, registerDto.Password);
+            if (!result.Succeeded) return BadRequest(result.Errors);
 
-        List<IdentityRole> roles = new List<IdentityRole>{
-            new IdentityRole{Name = "Admin"}
-        };
-        
-        foreach (var role in roles)
-        {
-            await _roleManager.CreateAsync(role);
-        }
+            List<IdentityRole> roles = new List<IdentityRole>{
+                new IdentityRole{Name = "Admin"}
+            };
+            
+            foreach (var role in roles)
+            {
+                await _roleManager.CreateAsync(role);
+            }
 
-        var roleResult = await _userManager.AddToRoleAsync(user, "Admin");
+            var roleResult = await _userManager.AddToRoleAsync(user, "Admin");
 
-        if (!roleResult.Succeeded) return BadRequest(result.Errors);
+            if (!roleResult.Succeeded) return BadRequest(result.Errors);
 
-        return new UserDto
-        {
-            Username = user.UserName,
-            Token =  _tokenService.CreateToken(user),
-            NickName = user.NickName
-        };
+            return new UserDto
+            {
+                Username = user.UserName,
+                Token =  await _tokenService.CreateToken(user),
+                NickName = user.NickName
+            };
         }
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginUserDto loginDto)
@@ -107,7 +109,7 @@ namespace Api.Controllers
         return new UserDto
         {
             Username = user.UserName,
-            Token =  _tokenService.CreateToken(user),
+            Token =  await _tokenService.CreateToken(user),
             NickName = user.NickName
         };
         }

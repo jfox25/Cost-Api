@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Api.Services;
+using Api.Helpers;
 
 namespace Api
 {
@@ -120,6 +121,7 @@ namespace Api
             services.AddAuthorization(opt => {
               opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
             });
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
