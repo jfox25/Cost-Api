@@ -53,7 +53,7 @@ namespace Api.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
-        public async Task<ActionResult<Expense>> PostExpense(AddExpenseDto addExpenseDto)
+        public async Task<ActionResult<int>> PostExpense(AddExpenseDto addExpenseDto)
         {
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);

@@ -10,6 +10,14 @@ namespace Api.Helpers
     {
       CreateMap<Expense, ExpenseDto>();
       CreateMap<ExpenseDto, Expense>();
+      CreateMap<LocationDto, Location>();
+      CreateMap<Location, LocationDto>();
+      CreateMap<CategoryDto, Category>();
+      CreateMap<Category, CategoryDto>();
+      CreateMap<Directive, DirectiveDto>();
+      CreateMap<Location, LocationLookupDto>();
+      CreateMap<Category, CategoryLookupDto>();
+      CreateMap<Directive, DirectiveLookupDto>();
     }
   }
 }
