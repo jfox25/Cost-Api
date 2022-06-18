@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace Api.Controllers
 {
@@ -102,20 +103,25 @@ namespace Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginUserDto loginDto)
         {
-        Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, isPersistent: true, lockoutOnFailure: false);
-        if (!result.Succeeded) return Unauthorized();
-       
-        var user = await _userManager.FindByNameAsync(loginDto.Email);
-        return new UserDto
-        {
-            Username = user.UserName,
-            Token =  await _tokenService.CreateToken(user),
-            NickName = user.NickName
-        };
-        }
-         private async Task<bool> UserExists(string username)
-        {
-        return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
+            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, isPersistent: true, lockoutOnFailure: false);
+            if (!result.Succeeded) return Unauthorized();
+        
+            var user = await _userManager.FindByNameAsync(loginDto.Email);
+            user.LastActive = DateTime.Now;
+            user.IsActive = true;
+            user.IsDeadUser = false;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return new UserDto
+            {
+                Username = user.UserName,
+                Token =  await _tokenService.CreateToken(user),
+                NickName = user.NickName
+            };
+            }
+            private async Task<bool> UserExists(string username)
+            {
+            return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
     }
 }

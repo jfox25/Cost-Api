@@ -43,6 +43,9 @@ namespace Api
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
             services.AddControllers();
+            services.AddScoped<UserBackgroundService>();
+            services.AddScoped<FrequentBackgroundService>();
+            services.AddHostedService<MyBackgroundService>();
             // services.AddSwaggerGen(c =>
             // {
             //     c.SwaggerDoc("v1", new OpenApiInfo

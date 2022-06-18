@@ -3,14 +3,16 @@ using System;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20220616133649_FrequentPropertyAdd")]
+    partial class FrequentPropertyAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,15 +37,6 @@ namespace Api.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsDeadUser")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("LastActive")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -285,12 +278,6 @@ namespace Api.Migrations
 
                     b.Property<int>("DirectiveId")
                         .HasColumnType("int");
-
-                    b.Property<int>("FrequentId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsRecurringExpense")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("LocationId")
                         .HasColumnType("int");

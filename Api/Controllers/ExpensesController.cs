@@ -67,8 +67,10 @@ namespace Api.Controllers
               DirectiveId = addExpenseDto.DirectiveId,
               CategoryId = addExpenseDto.CategoryId,
               Cost = addExpenseDto.Cost,
+              FrequentId = addExpenseDto.FrequentId,
               User = currentUser
             };
+            if(expense.FrequentId != 0) expense.IsRecurringExpense = true;
             _context.Expenses.Add(expense);
             await _context.SaveChangesAsync();
             return Ok(expense.ExpenseId);

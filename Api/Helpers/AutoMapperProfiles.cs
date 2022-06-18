@@ -18,6 +18,8 @@ namespace Api.Helpers
       CreateMap<Location, LocationLookupDto>();
       CreateMap<Category, CategoryLookupDto>();
       CreateMap<Directive, DirectiveLookupDto>();
+      CreateMap<Frequent, FrequentDto>();
+      CreateMap<FrequentDto, Frequent>();
     }
   }
 }

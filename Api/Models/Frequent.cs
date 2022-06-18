@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Api.Models
 {
@@ -14,6 +15,7 @@ namespace Api.Models
         public int Cost { get; set; }
         public bool IsRecurringExpense { get; set; }
         public int BilledEvery { get; set; } 
+        public DateTime LastBilledDate { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
 }

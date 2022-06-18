@@ -2,29 +2,29 @@
 USE expense_hub;
 
 INSERT INTO Locations ( Name , UserId)
-VALUES ('Prime Leaf', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
+VALUES ('Prime Leaf', userId);
 
 INSERT INTO Locations ( Name , UserId)
-VALUES ('Frys', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
+VALUES ('Frys', userId);
 
 INSERT INTO Locations ( Name , UserId)
-VALUES ('Chipotle', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
+VALUES ('Chipotle', userId);
 
-INSERT INTO Directives ( Name , UserId)
-VALUES ('Overhead', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
+INSERT INTO Directives ( Name )
+VALUES ('Overhead');
 
-INSERT INTO Directives ( Name , UserId)
-VALUES ('Investment', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
+INSERT INTO Directives ( Name )
+VALUES ('Investment');
 
-INSERT INTO Directives ( Name , UserId)
-VALUES ('Discretionary', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
-
-INSERT INTO Categories ( Name , UserId)
-VALUES ('Weed', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
+INSERT INTO Directives ( Name )
+VALUES ('Discretionary');
 
 INSERT INTO Categories ( Name , UserId)
-VALUES ('Groccery', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
+VALUES ('Weed', userId);
 
 INSERT INTO Categories ( Name , UserId)
-VALUES ('Restaurant', 'f63a998c-d53e-428f-8ad1-f405543aaf1b');
+VALUES ('Groccery', userId);
+
+INSERT INTO Categories ( Name , UserId)
+VALUES ('Restaurant', userId);
 

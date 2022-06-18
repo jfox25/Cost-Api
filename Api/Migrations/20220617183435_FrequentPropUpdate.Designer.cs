@@ -3,14 +3,16 @@ using System;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20220617183435_FrequentPropUpdate")]
+    partial class FrequentPropUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,9 +39,6 @@ namespace Api.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsDeadUser")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("LastActive")
@@ -289,9 +288,6 @@ namespace Api.Migrations
                     b.Property<int>("FrequentId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsRecurringExpense")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
 
@@ -303,6 +299,8 @@ namespace Api.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DirectiveId");
+
+                    b.HasIndex("FrequentId");
 
                     b.HasIndex("LocationId");
 
@@ -681,6 +679,12 @@ namespace Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Api.Models.Frequent", "Frequent")
+                        .WithMany("Expenses")
+                        .HasForeignKey("FrequentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Api.Models.Location", "Location")
                         .WithMany("Expenses")
                         .HasForeignKey("LocationId")
@@ -694,6 +698,8 @@ namespace Api.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Directive");
+
+                    b.Navigation("Frequent");
 
                     b.Navigation("Location");
 
@@ -850,6 +856,11 @@ namespace Api.Migrations
             modelBuilder.Entity("Api.Models.DirectiveAnalytic", b =>
                 {
                     b.Navigation("DirectiveCollection");
+                });
+
+            modelBuilder.Entity("Api.Models.Frequent", b =>
+                {
+                    b.Navigation("Expenses");
                 });
 
             modelBuilder.Entity("Api.Models.Location", b =>
