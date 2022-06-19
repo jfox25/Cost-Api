@@ -43,6 +43,7 @@ namespace Api
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
             services.AddControllers();
+            services.AddScoped<AnalyticService>();
             services.AddScoped<UserBackgroundService>();
             services.AddScoped<FrequentBackgroundService>();
             services.AddHostedService<MyBackgroundService>();

@@ -17,5 +17,6 @@ namespace Api.Models
         public int FrequentId { get; set; }
         public int Cost { get; set; }
         public virtual ApplicationUser User { get; set; }
+
     }
 }

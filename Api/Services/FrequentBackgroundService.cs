@@ -31,7 +31,7 @@ namespace Api.Services
             _context.Expenses.Add(expense);
         }
 
-        public async void CreateFrequentExpenses()
+        public async Task CreateFrequentExpenses()
         {
             DateTime today = DateTime.Now;
             var activeUsers = _context.Users.Where(user => user.IsActive == true).ToList();
@@ -44,15 +44,12 @@ namespace Api.Services
                     Console.WriteLine($"Found Frequents For {activeUsers[i].UserName}, Count = {frequents.Count}");
                     for (int x = 0; x < frequents.Count; x++)
                     {
-                        if(frequents[x].IsRecurringExpense)
+                        if(frequents[x].LastBilledDate.Month <= today.AddMonths(frequents[x].BilledEvery * -1).Month && frequents[x].IsRecurringExpense)
                         {
-                            if(frequents[x].LastBilledDate.Month <= today.AddMonths(frequents[x].BilledEvery * -1).Month)
-                            {
-                               CreateExpense(frequents[x], today); 
-                               frequents[x].LastBilledDate = new DateTime(today.Year, today.Month, frequents[x].LastBilledDate.Day);
-                               _context.Frequents.Update(frequents[x]);
-                            } 
-                        }
+                            CreateExpense(frequents[x], today); 
+                            frequents[x].LastBilledDate = new DateTime(today.Year, today.Month, frequents[x].LastBilledDate.Day);
+                            _context.Frequents.Update(frequents[x]);
+                        } 
                     }
                 }
             }

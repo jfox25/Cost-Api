@@ -29,10 +29,10 @@ namespace Api.Services
                         Console.WriteLine("Starting Background Services");
                         var _userBackgroundService = scope.ServiceProvider.GetRequiredService<UserBackgroundService>();
                         var _frequentBackgroundService = scope.ServiceProvider.GetRequiredService<FrequentBackgroundService>();
-                        _userBackgroundService.UpdateUserStatus();
+                        await _userBackgroundService.UpdateUserStatus();
                         Console.WriteLine("Updated Users");
                         Console.WriteLine("Starting to update Frequents");
-                        _frequentBackgroundService.CreateFrequentExpenses();
+                        await _frequentBackgroundService.CreateFrequentExpenses();
                         Console.WriteLine("Updated Frequents");
                         Console.WriteLine("Finished Background Services");
                     }

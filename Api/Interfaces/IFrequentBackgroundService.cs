@@ -8,7 +8,7 @@ namespace Api.Interfaces
 {
     public interface IFrequentBackgroundService
     {
-        void CreateFrequentExpenses();
+        Task CreateFrequentExpenses();
 
         void CreateExpense(Frequent frequent, DateTime today);
     }

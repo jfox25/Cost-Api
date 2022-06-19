@@ -8,7 +8,7 @@ namespace Api.Interfaces
 {
     public interface IUserBackgroundService
     {
-        void UpdateUserStatus();
+        Task UpdateUserStatus();
         void DeleteUserData(ApplicationUser user);
     }
 }

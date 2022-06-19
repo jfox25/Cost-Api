@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
+using Api.Services;
 
 namespace Api.Controllers
 {
@@ -21,8 +22,10 @@ namespace Api.Controllers
         private readonly ApiContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
-        public ExpensesController(ApiContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
+        private readonly AnalyticService _analyticService;
+        public ExpensesController(ApiContext context, UserManager<ApplicationUser> userManager, IMapper mapper, AnalyticService analyticService)
         {
+            _analyticService = analyticService;
             _context = context;
             _userManager = userManager;
             _mapper = mapper;
@@ -73,6 +76,7 @@ namespace Api.Controllers
             if(expense.FrequentId != 0) expense.IsRecurringExpense = true;
             _context.Expenses.Add(expense);
             await _context.SaveChangesAsync();
+            await _analyticService.UpdateAnalytics(expense.Date, currentUser, expense);
             return Ok(expense.ExpenseId);
         }
 
@@ -80,6 +84,8 @@ namespace Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutExpense(int id, ExpenseDto expense)
         {
+            var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = await _userManager.FindByNameAsync(username);
             var thisExpense = await _context.Expenses.FindAsync(id);
             if(thisExpense == null) return NotFound();
             _mapper.Map(expense, thisExpense);
@@ -100,13 +106,15 @@ namespace Api.Controllers
                     throw;
                 }
             }
-
+            await _analyticService.UpdateAnalytics(thisExpense.Date, currentUser, thisExpense);
             return Ok();
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteExpense(int id)
         {
+            var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = await _userManager.FindByNameAsync(username);
             var expense = await _context.Expenses.FindAsync(id);
             if (expense == null)
             {
@@ -114,6 +122,7 @@ namespace Api.Controllers
             }
             _context.Expenses.Remove(expense);
             await _context.SaveChangesAsync();
+            await _analyticService.UpdateAnalytics(expense.Date, currentUser, expense);
             return NoContent();
         }
 
