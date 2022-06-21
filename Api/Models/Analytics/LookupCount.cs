@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Api.Models
 {
-    public class CategoryCount
+    public class LookupCount
     {
-        public int CategoryCountId { get; set; }
-        public DateTime Date { get; set; }
-        public int CategoryId { get; set; }
-        public virtual Category Category { get; set; }
+        public int LookupCountId { get; set; }
+        public int LookupId { get; set; }
+        public int LookupTypeId { get; set; }
+        public string LookupTypeName { get; set; }
         public int NumberOfExpenses { get; set; }
         public int TotalCostOfExpenses { get; set; }
         public virtual ApplicationUser User { get; set; }

@@ -76,7 +76,7 @@ namespace Api.Controllers
             if(expense.FrequentId != 0) expense.IsRecurringExpense = true;
             _context.Expenses.Add(expense);
             await _context.SaveChangesAsync();
-            await _analyticService.UpdateAnalytics(expense.Date, currentUser, expense);
+            await _analyticService.UpdateAnalytics(currentUser, expense);
             return Ok(expense.ExpenseId);
         }
 
@@ -106,7 +106,7 @@ namespace Api.Controllers
                     throw;
                 }
             }
-            await _analyticService.UpdateAnalytics(thisExpense.Date, currentUser, thisExpense);
+            await _analyticService.UpdateAnalytics(currentUser, thisExpense);
             return Ok();
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
@@ -122,7 +122,7 @@ namespace Api.Controllers
             }
             _context.Expenses.Remove(expense);
             await _context.SaveChangesAsync();
-            await _analyticService.UpdateAnalytics(expense.Date, currentUser, expense);
+            await _analyticService.UpdateAnalytics(currentUser, expense);
             return NoContent();
         }
 

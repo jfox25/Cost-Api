@@ -3,14 +3,16 @@ using System;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20220619174644_ChangedLookupAnalytic")]
+    partial class ChangedLookupAnalytic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -308,12 +310,6 @@ namespace Api.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("LookupTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LookupTypeName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
@@ -339,9 +335,6 @@ namespace Api.Migrations
                     b.Property<int>("LookupTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("LookupTypeName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<int>("NumberOfExpenses")
                         .HasColumnType("int");
 
@@ -354,6 +347,8 @@ namespace Api.Migrations
                     b.HasKey("LookupCountId");
 
                     b.HasIndex("LookupAnalyticId");
+
+                    b.HasIndex("LookupTypeId");
 
                     b.HasIndex("UserId");
 
@@ -619,9 +614,17 @@ namespace Api.Migrations
                         .WithMany("LookupCollection")
                         .HasForeignKey("LookupAnalyticId");
 
+                    b.HasOne("Api.Models.LookupType", "LookupType")
+                        .WithMany()
+                        .HasForeignKey("LookupTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Api.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("LookupType");
 
                     b.Navigation("User");
                 });
