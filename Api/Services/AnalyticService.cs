@@ -36,11 +36,18 @@ namespace Api.Services
                 existingGeneralAnalytic.MostExpensiveDirectiveId = MostExpensiveLookup(userExpenses, "DirectiveId", changedExpense, currentUser);
                 existingGeneralAnalytic.MostExpensiveCategoryId = MostExpensiveLookup(userExpenses, "CategoryId", changedExpense, currentUser);
                 existingGeneralAnalytic.MostExpensiveLocationId = MostExpensiveLookup(userExpenses, "LocationId", changedExpense, currentUser);
+                existingGeneralAnalytic.DirectiveName = _context.Directives.FirstOrDefault(directive => directive.DirectiveId == existingGeneralAnalytic.MostExpensiveDirectiveId).Name;
+                existingGeneralAnalytic.CategoryName = _context.Categories.FirstOrDefault(category => category.CategoryId == existingGeneralAnalytic.MostExpensiveCategoryId).Name;
+                existingGeneralAnalytic.LocationName = _context.Locations.FirstOrDefault(location => location.LocationId == existingGeneralAnalytic.MostExpensiveLocationId).Name;
                 _context.GeneralAnalytics.Update(existingGeneralAnalytic);
             }
             await _context.SaveChangesAsync();
         }
         //Creates a new General Analytic object and adds it to db
+
+        //  _context.Locations.FirstOrDefault(location => location.LocationId == model.MostExpensiveLocationId).Name;
+        //  _context.Categories.FirstOrDefault(category => category.CategoryId == model.MostExpensiveCategoryId).Name;
+        //  _context.Directives.FirstOrDefault(directive => directive.DirectiveId == model.MostExpensiveDirectiveId).Name;
         public void CreateGeneralAnalytic(ApplicationUser user, Expense changedExpense)
         {
             GeneralAnalytic analytic = new GeneralAnalytic()
@@ -49,8 +56,11 @@ namespace Api.Services
                 NumberOfExpenses = 1,
                 TotalCostOfExpenses = changedExpense.Cost,
                 MostExpensiveDirectiveId = changedExpense.DirectiveId,
+                DirectiveName = _context.Directives.FirstOrDefault(directive => directive.DirectiveId == changedExpense.DirectiveId).Name,
                 MostExpensiveCategoryId = changedExpense.CategoryId,
+                CategoryName = _context.Categories.FirstOrDefault(category => category.CategoryId == changedExpense.CategoryId).Name,
                 MostExpensiveLocationId = changedExpense.LocationId,
+                LocationName = _context.Locations.FirstOrDefault(location => location.LocationId == changedExpense.LocationId).Name,
                 User = user
             };
             _context.GeneralAnalytics.Add(analytic);
@@ -118,7 +128,7 @@ namespace Api.Services
         public LookupCount CreateLookupCount(int LookupId, int TotalCostOfExpenses, int NumberOfExpenses, ApplicationUser user, string lookupTypeName)
         {
             LookupType lookupType = _context.LookupTypes.FirstOrDefault(x => x.LookupName == lookupTypeName);
-            return new LookupCount()
+            LookupCount lookupCount = new LookupCount()
             {
                 LookupId = LookupId,
                 LookupTypeId = lookupType.LookupTypeId,
@@ -127,6 +137,18 @@ namespace Api.Services
                 TotalCostOfExpenses = TotalCostOfExpenses,
                 User = user
             };
+            lookupCount.LookupName = GetLookupNameFromLookupCount(lookupCount);
+            return lookupCount;
+        }
+        public string GetLookupNameFromLookupCount(LookupCount lookupCount)
+        {
+            int directiveLookupTypeId = 2;
+            int locationLookupTypeId = 3;
+            int categoryLookupTypeId = 1;
+            if(lookupCount.LookupTypeId == locationLookupTypeId) return _context.Locations.FirstOrDefault(location => location.LocationId == lookupCount.LookupId).Name;
+            if(lookupCount.LookupTypeId == directiveLookupTypeId) return _context.Directives.FirstOrDefault(directive => directive.DirectiveId == lookupCount.LookupId).Name;
+            if(lookupCount.LookupTypeId == categoryLookupTypeId) return _context.Categories.FirstOrDefault(category => category.CategoryId == lookupCount.LookupId).Name;
+            return "Error: Name Not Found";
         }
         //Updates the LookupCollection if there are no expenses for the given month.
         public void UpdateLookCollectionForNoExpenses(LookupAnalytic existingLookupAnalytic)

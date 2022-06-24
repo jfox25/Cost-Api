@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Api.Models;
 
-namespace Api.Models
+namespace Api.Dto
 {
-    public class LookupCount
+    public class LookupCountDto
     {
         public int LookupCountId { get; set; }
         public int LookupId { get; set; }
@@ -12,6 +15,6 @@ namespace Api.Models
         public string LookupTypeName { get; set; }
         public int NumberOfExpenses { get; set; }
         public int TotalCostOfExpenses { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public string UserId { get; set; }
     }
 }

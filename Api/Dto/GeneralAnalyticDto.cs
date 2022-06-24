@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Api.Models
+namespace Api.Dto
 {
-    public class GeneralAnalytic
+    public class GeneralAnalyticDto
     {
         public int GeneralAnalyticId { get; set; }
         public DateTime Date { get; set; }
@@ -14,6 +17,6 @@ namespace Api.Models
         public string DirectiveName { get; set; }
         public int MostExpensiveCategoryId { get; set; }
         public string CategoryName { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public string UserId { get; set; }
     }
 }

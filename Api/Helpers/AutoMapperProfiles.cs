@@ -20,6 +20,9 @@ namespace Api.Helpers
       CreateMap<Directive, DirectiveLookupDto>();
       CreateMap<Frequent, FrequentDto>();
       CreateMap<FrequentDto, Frequent>();
+      CreateMap<GeneralAnalytic, GeneralAnalyticDto>();
+      CreateMap<LookupAnalytic, LookupAnalyticDto>();
+      CreateMap<LookupCount, LookupCountDto>();
     }
   }
 }
