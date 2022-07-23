@@ -11,8 +11,8 @@ namespace Api.Dto
         public DateTime Date { get; set; }
         public int NumberOfExpenses { get; set; }
         public int TotalCostOfExpenses { get; set; }
-        public int MostExpensiveLocationId { get; set; }
-        public string LocationName { get; set; }
+        public int MostExpensiveBusinessId { get; set; }
+        public string BusinessName { get; set; }
         public int MostExpensiveDirectiveId { get; set; }
         public string DirectiveName { get; set; }
         public int MostExpensiveCategoryId { get; set; }

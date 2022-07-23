@@ -6,8 +6,8 @@ namespace Api.Models
     public class Expense
     {
         public int ExpenseId { get; set; }
-        public int LocationId { get; set; }
-        public virtual Location Location { get; set; }
+        public int BusinessId { get; set; }
+        public virtual Business Business { get; set; }
         public DateTime Date { get; set; }
         public int DirectiveId { get; set; }
         public virtual Directive Directive { get; set; }

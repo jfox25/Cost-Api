@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Api.Dto
 {
-    public class LocationLookupDto     
+    public class BusinessLookupDto     
     {
-        public int LocationId { get; set; }
+        public int BusinessId { get; set; }
         public string Name { get; set; }
         public string UserId { get; set; }
     }

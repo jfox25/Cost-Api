@@ -6,8 +6,9 @@ namespace Api.Models
     public class Frequent  
     {
         public int FrequentId { get; set; }
-        public int LocationId { get; set; }
-        public virtual Location Location { get; set; }
+        public string Name { get; set; }
+        public int BusinessId { get; set; }
+        public virtual Business Business { get; set; }
         public int DirectiveId { get; set; }
         public virtual Directive Directive { get; set; }
         public int CategoryId { get; set; }
@@ -15,7 +16,7 @@ namespace Api.Models
         public int Cost { get; set; }
         public bool IsRecurringExpense { get; set; }
         public int BilledEvery { get; set; } 
-        public DateTime LastBilledDate { get; set; }
+        public DateTime LastUsedDate { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
 }

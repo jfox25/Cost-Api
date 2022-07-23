@@ -9,14 +9,18 @@ namespace Api.Helpers
     public AutoMapperProfiles()
     {
       CreateMap<Expense, ExpenseDto>();
+      CreateMap<Expense, ExpenseDetailDto>();
       CreateMap<ExpenseDto, Expense>();
-      CreateMap<LocationDto, Location>();
-      CreateMap<Location, LocationDto>();
+      CreateMap<BusinessDto, Business>();
+      CreateMap<Business, BusinessDto>();
       CreateMap<CategoryDto, Category>();
       CreateMap<Category, CategoryDto>();
       CreateMap<Directive, DirectiveDto>();
-      CreateMap<Location, LocationLookupDto>();
+      CreateMap<Business, BusinessLookupDto>();
+      CreateMap<Business, BusinessDetailDto>();
+      CreateMap<BusinessDto, BusinessDetailDto>();
       CreateMap<Category, CategoryLookupDto>();
+      CreateMap<Category, CategoryDetailDto>();
       CreateMap<Directive, DirectiveLookupDto>();
       CreateMap<Frequent, FrequentDto>();
       CreateMap<FrequentDto, Frequent>();

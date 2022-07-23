@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -40,7 +41,7 @@ namespace Api.Controllers
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<FrequentDto>> GetFrequent(int id)
+        public async Task<ActionResult<FrequentDetailDto>> GetFrequent(int id)
         {
              var frequent = await _context.Frequents
                 .Where(x => x.FrequentId == id)
@@ -49,7 +50,21 @@ namespace Api.Controllers
 
             if (frequent == null) return NotFound();
 
-            return frequent;
+            var frequentDetailDto = new FrequentDetailDto() {
+                Name = frequent.Name,
+                Id = frequent.FrequentId,
+                Category = frequent.CategoryName,
+                Business = frequent.BusinessName,
+                Directive = frequent.DirectiveName,
+                Cost = frequent.Cost,
+                LastUsedDate = frequent.LastUsedDate.ToShortDateString(),
+                RecurringExpense = (frequent.IsRecurringExpense) ? "Yes" : "No",
+                BilledEvery = (frequent.BilledEvery == 0) 
+                                ? "-"
+                                : (frequent.BilledEvery == 1) ? $"{frequent.BilledEvery} month" 
+                                                              : $"{frequent.BilledEvery} months"
+            };
+            return frequentDetailDto;
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
@@ -57,9 +72,10 @@ namespace Api.Controllers
         {
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
-           
+
             Frequent frequent = new Frequent() {
-              LocationId = addFrequentDto.LocationId,
+              Name = addFrequentDto.Name,
+              BusinessId = addFrequentDto.BusinessId,
               DirectiveId = addFrequentDto.DirectiveId,
               CategoryId = addFrequentDto.CategoryId,
               Cost = addFrequentDto.Cost,
@@ -67,6 +83,12 @@ namespace Api.Controllers
               BilledEvery = addFrequentDto.BilledEvery,
               User = currentUser
             };
+            if(frequent.IsRecurringExpense == false)
+            {
+                frequent.LastUsedDate = DateTime.Now;
+            }else {
+                frequent.LastUsedDate = DateTime.Parse(addFrequentDto.LastUsedDate);
+            }
             _context.Frequents.Add(frequent);
             await _context.SaveChangesAsync();
             return Ok(frequent.FrequentId);

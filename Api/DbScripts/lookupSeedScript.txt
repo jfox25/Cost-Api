@@ -1,12 +1,12 @@
 USE expense_hub;
 
-INSERT INTO Locations ( Name , UserId)
+INSERT INTO Businesses ( Name , UserId)
 VALUES ('Prime Leaf', userId);
 
-INSERT INTO Locations ( Name , UserId)
+INSERT INTO Businesses ( Name , UserId)
 VALUES ('Frys', userId);
 
-INSERT INTO Locations ( Name , UserId)
+INSERT INTO Businesses ( Name , UserId)
 VALUES ('Chipotle', userId);
 
 INSERT INTO Directives ( Name )

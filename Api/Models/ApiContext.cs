@@ -8,7 +8,7 @@ namespace Api.Models
     {
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Frequent> Frequents { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        public DbSet<Business> Businesses { get; set; }
         public DbSet<Directive> Directives { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<GeneralAnalytic> GeneralAnalytics { get; set; }

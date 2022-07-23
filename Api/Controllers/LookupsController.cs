@@ -41,11 +41,11 @@ namespace Api.Controllers
             var categories = _context.Categories.Where(category => category.User.Id == currentUser.Id);
             var categoryDtos = await categories.ProjectTo<CategoryLookupDto>(_mapper.ConfigurationProvider).ToListAsync();
 
-            var locations = _context.Locations.Where(location => location.User.Id == currentUser.Id);
-            var locationDtos = await locations.ProjectTo<LocationLookupDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var Businesss = _context.Businesses.Where(Business => Business.User.Id == currentUser.Id);
+            var BusinessDtos = await Businesss.ProjectTo<BusinessLookupDto>(_mapper.ConfigurationProvider).ToListAsync();
 
             LookupDto lookup = new LookupDto() {
-                Locations = locationDtos,
+                Businesss = BusinessDtos,
                 Categories = categoryDtos,
                 Directives = directiveDtos
             };

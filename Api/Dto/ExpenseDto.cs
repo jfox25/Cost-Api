@@ -6,8 +6,8 @@ namespace Api.Dto
     {
         public int ExpenseId { get; set; }
         public string Date { get; set; }
-        public int LocationId { get; set; }
-        public string LocationName { get; set; }
+        public int BusinessId { get; set; }
+        public string BusinessName { get; set; }
         public int DirectiveId { get; set;}
         public string DirectiveName { get; set; }
         public int CategoryId { get; set; }

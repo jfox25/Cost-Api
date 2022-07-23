@@ -10,5 +10,8 @@ namespace Api.Models
         public DateTime LastActive { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeadUser { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime TokenCreated { get; set; }
+        public DateTime TokenExpires { get; set; }
     }
 }

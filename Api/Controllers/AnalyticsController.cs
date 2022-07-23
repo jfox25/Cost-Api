@@ -54,7 +54,7 @@ namespace Api.Controllers
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("generalAnalytics/{id}")]
-        public async Task<ActionResult<GeneralAnalyticDto>> GetGeneralAnalytic(int id)
+        public async Task<ActionResult<GeneralAnalyticDetailDto>> GetGeneralAnalytic(int id)
         {
              var generalAnalytic = await _context.GeneralAnalytics
                 .Where(x => x.GeneralAnalyticId == id)
@@ -62,7 +62,17 @@ namespace Api.Controllers
                 .SingleOrDefaultAsync();
 
             if (generalAnalytic == null) return NotFound();
-            return generalAnalytic;
+
+            var generalAnalyticDetailDto = new GeneralAnalyticDetailDto() {
+                Id = generalAnalytic.GeneralAnalyticId,
+                Date = generalAnalytic.Date.ToShortDateString(),
+                MostExpensiveCategory = generalAnalytic.CategoryName,
+                MostExpensiveBusiness = generalAnalytic.BusinessName,
+                MostExpensiveDirective = generalAnalytic.DirectiveName,
+                NumberOfExpenses = generalAnalytic.NumberOfExpenses,
+                TotalCostOfExpenses = generalAnalytic.TotalCostOfExpenses
+            };
+            return generalAnalyticDetailDto;
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("lookupAnalytics/{id}")]
@@ -120,7 +130,7 @@ namespace Api.Controllers
                 TotalCostOfExpenses = _analyticService.GetTotalCost(expenses),
                 NumberOfExpenses = expenses.Count,
                 NumberOfCategories = _context.Categories.Where(category => category.User.Id == currentUser.Id).ToList().Count,
-                NumberOfLocations = _context.Locations.Where(location => location.User.Id == currentUser.Id).ToList().Count,
+                NumberOfBusinesses = _context.Businesses.Where(business => business.User.Id == currentUser.Id).ToList().Count,
                 NumberOfFrequents = _context.Frequents.Where(frequent => frequent.User.Id == currentUser.Id).ToList().Count
             };
         }

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 
 namespace Api.Controllers
 {
@@ -60,7 +62,8 @@ namespace Api.Controllers
         {
             Username = user.UserName,
             Token =  await _tokenService.CreateToken(user),
-            NickName = user.NickName
+            NickName = user.NickName,
+            Roles = await _userManager.GetRolesAsync(user)
         };
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
@@ -97,7 +100,8 @@ namespace Api.Controllers
             {
                 Username = user.UserName,
                 Token =  await _tokenService.CreateToken(user),
-                NickName = user.NickName
+                NickName = user.NickName,
+                Roles = await _userManager.GetRolesAsync(user)
             };
         }
         [HttpPost("login")]
@@ -110,18 +114,92 @@ namespace Api.Controllers
             user.LastActive = DateTime.Now;
             user.IsActive = true;
             user.IsDeadUser = false;
+            RefreshTokenDto newRefreshToken = _tokenService.GenerateRefreshToken();
+            SetRefreshToken(newRefreshToken, user);
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return new UserDto
             {
                 Username = user.UserName,
                 Token =  await _tokenService.CreateToken(user),
-                NickName = user.NickName
+                NickName = user.NickName,
+                Roles = await _userManager.GetRolesAsync(user)
             };
-            }
-            private async Task<bool> UserExists(string username)
-            {
+    }
+        private async Task<bool> UserExists(string username)
+        {
             return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
+        [HttpGet("refresh-token")]
+        public async Task<ActionResult<UserDto>> RefreshToken()
+        {
+            var refreshToken = HttpContext.Request.Cookies["refreshToken"];
+            var userToken = HttpContext.Request.Cookies["userToken"];
+            if(userToken == null) {
+                return Unauthorized("Invalid User Token.");
+            } 
+            var user = await _userManager.FindByNameAsync(userToken);
+
+            if (!user.RefreshToken.Equals(refreshToken))
+            {
+                return StatusCode(403);
+            }
+            else if(user.TokenExpires < DateTime.Now)
+            {
+                return StatusCode(403);
+            }
+
+            RefreshTokenDto newRefreshToken = _tokenService.GenerateRefreshToken();
+            SetRefreshToken(newRefreshToken, user);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return new UserDto
+            {
+                Username = user.UserName,
+                Token =  await _tokenService.CreateToken(user),
+                NickName = user.NickName,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+        }
+
+        [HttpGet("logout")]
+        public ActionResult<string> Logout() 
+        {
+            var refreshToken = HttpContext.Request.Cookies["refreshToken"];
+            var userToken = HttpContext.Request.Cookies["userToken"]; 
+            if(refreshToken != null && userToken != null)
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = DateTimeOffset.Now.AddDays(-1),
+                    SameSite = 0,
+                    Secure = true
+                };
+                HttpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
+                HttpContext.Response.Cookies.Append("userToken", "", cookieOptions);
+            }
+
+            return Ok();
+        }
+        private void SetRefreshToken(RefreshTokenDto newRefreshToken, ApplicationUser user)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = newRefreshToken.Expires,
+                SameSite = 0,
+                Secure = true
+            };
+            HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+            HttpContext.Response.Cookies.Append("userToken", user.UserName, cookieOptions);
+            
+
+            user.RefreshToken = newRefreshToken.Token;
+            user.TokenCreated = newRefreshToken.Created;
+            user.TokenExpires = newRefreshToken.Expires;
+        }
+
     }
 }

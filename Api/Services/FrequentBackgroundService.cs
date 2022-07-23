@@ -19,8 +19,8 @@ namespace Api.Services
         {
             Console.WriteLine("Adding Expense From Frequent...");
              Expense expense = new Expense() {
-              LocationId = frequent.LocationId,
-              Date = new DateTime(today.Year, today.Month, frequent.LastBilledDate.Day),
+              BusinessId = frequent.BusinessId,
+              Date = new DateTime(today.Year, today.Month, frequent.LastUsedDate.Day),
               DirectiveId = frequent.DirectiveId,
               CategoryId = frequent.CategoryId,
               Cost = frequent.Cost,
@@ -44,10 +44,10 @@ namespace Api.Services
                     Console.WriteLine($"Found Frequents For {activeUsers[i].UserName}, Count = {frequents.Count}");
                     for (int x = 0; x < frequents.Count; x++)
                     {
-                        if(frequents[x].LastBilledDate.Month <= today.AddMonths(frequents[x].BilledEvery * -1).Month && frequents[x].IsRecurringExpense)
+                        if(frequents[x].LastUsedDate.Month <= today.AddMonths(frequents[x].BilledEvery * -1).Month && frequents[x].IsRecurringExpense)
                         {
                             CreateExpense(frequents[x], today); 
-                            frequents[x].LastBilledDate = new DateTime(today.Year, today.Month, frequents[x].LastBilledDate.Day);
+                            frequents[x].LastUsedDate = new DateTime(today.Year, today.Month, frequents[x].LastUsedDate.Day);
                             _context.Frequents.Update(frequents[x]);
                         } 
                     }

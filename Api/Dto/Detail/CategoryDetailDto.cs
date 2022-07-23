@@ -3,13 +3,11 @@ using System.Collections.Generic;
 
 namespace Api.Dto
 {
-    public class CategoryDto         
+    public class CategoryDetailDto         
     {
-        public int CategoryId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public string UserId { get; set; }
         public int NumberOfExpenses { get; set; }
         public int TotalCostOfExpenses { get; set; }
-        public ICollection<ExpenseDto> Expenses { get; set; }
     }
 }

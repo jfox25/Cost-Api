@@ -20,8 +20,8 @@ namespace Api.Services
         {
             var userExpensesToDelete =  _context.Expenses.Where(expense => expense.User.Id == user.Id).ToList();
             _context.RemoveRange(userExpensesToDelete);
-            var userLocationsToDelete =  _context.Locations.Where(location => location.User.Id == user.Id).ToList();
-            _context.RemoveRange(userLocationsToDelete);
+            var userBusinesssToDelete =  _context.Businesses.Where(business => business.User.Id == user.Id).ToList();
+            _context.RemoveRange(userBusinesssToDelete);
             var userFrequentsToDelete =  _context.Frequents.Where(frequent => frequent.User.Id == user.Id).ToList();
             _context.RemoveRange(userFrequentsToDelete);
             var userCategoriesToDelete =  _context.Categories.Where(category => category.User.Id == user.Id).ToList();

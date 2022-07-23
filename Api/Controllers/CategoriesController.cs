@@ -36,11 +36,15 @@ namespace Api.Controllers
             var currentUser = await _userManager.FindByNameAsync(username);
             var categories = _context.Categories.Where(category => category.User.Id == currentUser.Id);
             var model = await categories.ProjectTo<CategoryDto>(_mapper.ConfigurationProvider).ToListAsync();
+            model.ForEach((model) => {
+                model.NumberOfExpenses = model.Expenses.Count;
+                model.TotalCostOfExpenses = GetTotalCost(model.Expenses.ToList());
+            });
             return Ok(model);
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryDto>> GetCategory(int id)
+        public async Task<ActionResult<CategoryDetailDto>> GetCategory(int id)
         {
              var category = await _context.Categories
                 .Where(x => x.CategoryId == id)
@@ -49,7 +53,17 @@ namespace Api.Controllers
 
             if (category == null) return NotFound();
 
-            return category;
+            category.NumberOfExpenses = category.Expenses.Count;
+            category.TotalCostOfExpenses = GetTotalCost(category.Expenses.ToList());
+
+            var categoryDetailDto = new CategoryDetailDto() {
+                Id = category.CategoryId,
+                Name = category.Name,
+                TotalCostOfExpenses = category.TotalCostOfExpenses,
+                NumberOfExpenses = category.NumberOfExpenses
+            };
+
+            return categoryDetailDto;
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
@@ -113,6 +127,15 @@ namespace Api.Controllers
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.CategoryId == id);
+        }
+        public int GetTotalCost(List<ExpenseDto> userExpenses)
+        {
+            int total = 0;
+            for (int i = 0; i < userExpenses.Count; i++)
+            {
+                total += userExpenses[i].Cost;
+            }
+            return total;
         }
     }
 }

@@ -3,14 +3,16 @@ using System;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20220713032353_LocationUpdate")]
+    partial class LocationUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,17 +73,8 @@ namespace Api.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime>("TokenCreated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("TokenExpires")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
@@ -100,31 +93,6 @@ namespace Api.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Api.Models.Business", b =>
-                {
-                    b.Property<int>("BusinessId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CategoryName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.HasKey("BusinessId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Businesses");
                 });
 
             modelBuilder.Entity("Api.Models.Category", b =>
@@ -155,13 +123,13 @@ namespace Api.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("MostExpensiveBusinessId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MostExpensiveCategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("MostExpensiveDirectiveId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MostExpensiveLocationId")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOfExpenses")
@@ -200,9 +168,6 @@ namespace Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -221,16 +186,19 @@ namespace Api.Migrations
                     b.Property<bool>("IsRecurringExpense")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("ExpenseId");
 
-                    b.HasIndex("BusinessId");
-
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DirectiveId");
+
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("UserId");
 
@@ -246,9 +214,6 @@ namespace Api.Migrations
                     b.Property<int>("BilledEvery")
                         .HasColumnType("int");
 
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -261,22 +226,22 @@ namespace Api.Migrations
                     b.Property<bool>("IsRecurringExpense")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("LastUsedDate")
+                    b.Property<DateTime>("LastBilledDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("FrequentId");
 
-                    b.HasIndex("BusinessId");
-
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DirectiveId");
+
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("UserId");
 
@@ -289,9 +254,6 @@ namespace Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("BusinessName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<string>("CategoryName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -301,13 +263,16 @@ namespace Api.Migrations
                     b.Property<string>("DirectiveName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("MostExpensiveBusinessId")
-                        .HasColumnType("int");
+                    b.Property<string>("LocationName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("MostExpensiveCategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("MostExpensiveDirectiveId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MostExpensiveLocationId")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOfExpenses")
@@ -324,6 +289,31 @@ namespace Api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("GeneralAnalytics");
+                });
+
+            modelBuilder.Entity("Api.Models.Location", b =>
+                {
+                    b.Property<int>("LocationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.HasKey("LocationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("Api.Models.LookupAnalytic", b =>
@@ -532,15 +522,6 @@ namespace Api.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Api.Models.Business", b =>
-                {
-                    b.HasOne("Api.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Api.Models.Category", b =>
                 {
                     b.HasOne("Api.Models.ApplicationUser", "User")
@@ -561,12 +542,6 @@ namespace Api.Migrations
 
             modelBuilder.Entity("Api.Models.Expense", b =>
                 {
-                    b.HasOne("Api.Models.Business", "Business")
-                        .WithMany("Expenses")
-                        .HasForeignKey("BusinessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Api.Models.Category", "Category")
                         .WithMany("Expenses")
                         .HasForeignKey("CategoryId")
@@ -579,27 +554,27 @@ namespace Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Api.Models.Location", "Location")
+                        .WithMany("Expenses")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Api.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Business");
-
                     b.Navigation("Category");
 
                     b.Navigation("Directive");
+
+                    b.Navigation("Location");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Api.Models.Frequent", b =>
                 {
-                    b.HasOne("Api.Models.Business", "Business")
-                        .WithMany()
-                        .HasForeignKey("BusinessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Api.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
@@ -612,20 +587,35 @@ namespace Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Api.Models.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Api.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Business");
 
                     b.Navigation("Category");
 
                     b.Navigation("Directive");
 
+                    b.Navigation("Location");
+
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Api.Models.GeneralAnalytic", b =>
+                {
+                    b.HasOne("Api.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Api.Models.Location", b =>
                 {
                     b.HasOne("Api.Models.ApplicationUser", "User")
                         .WithMany()
@@ -707,17 +697,17 @@ namespace Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Api.Models.Business", b =>
-                {
-                    b.Navigation("Expenses");
-                });
-
             modelBuilder.Entity("Api.Models.Category", b =>
                 {
                     b.Navigation("Expenses");
                 });
 
             modelBuilder.Entity("Api.Models.Directive", b =>
+                {
+                    b.Navigation("Expenses");
+                });
+
+            modelBuilder.Entity("Api.Models.Location", b =>
                 {
                     b.Navigation("Expenses");
                 });

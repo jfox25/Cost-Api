@@ -27,7 +27,7 @@ namespace Api.Services
                 CreateGeneralAnalytic(currentUser, changedExpense);
                 UpdateLookupAnalyticFromScratch(userExpenses, "DirectiveId", currentUser, changedExpense);
                 UpdateLookupAnalyticFromScratch(userExpenses, "CategoryId", currentUser, changedExpense);
-                UpdateLookupAnalyticFromScratch(userExpenses, "LocationId", currentUser, changedExpense);
+                UpdateLookupAnalyticFromScratch(userExpenses, "BusinessId", currentUser, changedExpense);
             }
             else
             {
@@ -35,17 +35,17 @@ namespace Api.Services
                 existingGeneralAnalytic.TotalCostOfExpenses = GetTotalCost(userExpenses);
                 existingGeneralAnalytic.MostExpensiveDirectiveId = MostExpensiveLookup(userExpenses, "DirectiveId", changedExpense, currentUser);
                 existingGeneralAnalytic.MostExpensiveCategoryId = MostExpensiveLookup(userExpenses, "CategoryId", changedExpense, currentUser);
-                existingGeneralAnalytic.MostExpensiveLocationId = MostExpensiveLookup(userExpenses, "LocationId", changedExpense, currentUser);
+                existingGeneralAnalytic.MostExpensiveBusinessId = MostExpensiveLookup(userExpenses, "BusinessId", changedExpense, currentUser);
                 existingGeneralAnalytic.DirectiveName = _context.Directives.FirstOrDefault(directive => directive.DirectiveId == existingGeneralAnalytic.MostExpensiveDirectiveId).Name;
                 existingGeneralAnalytic.CategoryName = _context.Categories.FirstOrDefault(category => category.CategoryId == existingGeneralAnalytic.MostExpensiveCategoryId).Name;
-                existingGeneralAnalytic.LocationName = _context.Locations.FirstOrDefault(location => location.LocationId == existingGeneralAnalytic.MostExpensiveLocationId).Name;
+                existingGeneralAnalytic.BusinessName = _context.Businesses.FirstOrDefault(Business => Business.BusinessId == existingGeneralAnalytic.MostExpensiveBusinessId).Name;
                 _context.GeneralAnalytics.Update(existingGeneralAnalytic);
             }
             await _context.SaveChangesAsync();
         }
         //Creates a new General Analytic object and adds it to db
 
-        //  _context.Locations.FirstOrDefault(location => location.LocationId == model.MostExpensiveLocationId).Name;
+        //  _context.Businesses.FirstOrDefault(Business => Business.BusinessId == model.MostExpensiveBusinessId).Name;
         //  _context.Categories.FirstOrDefault(category => category.CategoryId == model.MostExpensiveCategoryId).Name;
         //  _context.Directives.FirstOrDefault(directive => directive.DirectiveId == model.MostExpensiveDirectiveId).Name;
         public void CreateGeneralAnalytic(ApplicationUser user, Expense changedExpense)
@@ -59,8 +59,8 @@ namespace Api.Services
                 DirectiveName = _context.Directives.FirstOrDefault(directive => directive.DirectiveId == changedExpense.DirectiveId).Name,
                 MostExpensiveCategoryId = changedExpense.CategoryId,
                 CategoryName = _context.Categories.FirstOrDefault(category => category.CategoryId == changedExpense.CategoryId).Name,
-                MostExpensiveLocationId = changedExpense.LocationId,
-                LocationName = _context.Locations.FirstOrDefault(location => location.LocationId == changedExpense.LocationId).Name,
+                MostExpensiveBusinessId = changedExpense.BusinessId,
+                BusinessName = _context.Businesses.FirstOrDefault(Business => Business.BusinessId == changedExpense.BusinessId).Name,
                 User = user
             };
             _context.GeneralAnalytics.Add(analytic);
@@ -143,9 +143,9 @@ namespace Api.Services
         public string GetLookupNameFromLookupCount(LookupCount lookupCount)
         {
             int directiveLookupTypeId = 2;
-            int locationLookupTypeId = 3;
+            int BusinessLookupTypeId = 3;
             int categoryLookupTypeId = 1;
-            if(lookupCount.LookupTypeId == locationLookupTypeId) return _context.Locations.FirstOrDefault(location => location.LocationId == lookupCount.LookupId).Name;
+            if(lookupCount.LookupTypeId == BusinessLookupTypeId) return _context.Businesses.FirstOrDefault(business => business.BusinessId == lookupCount.LookupId).Name;
             if(lookupCount.LookupTypeId == directiveLookupTypeId) return _context.Directives.FirstOrDefault(directive => directive.DirectiveId == lookupCount.LookupId).Name;
             if(lookupCount.LookupTypeId == categoryLookupTypeId) return _context.Categories.FirstOrDefault(category => category.CategoryId == lookupCount.LookupId).Name;
             return "Error: Name Not Found";

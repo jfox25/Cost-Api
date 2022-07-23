@@ -34,7 +34,10 @@ namespace Api.Controllers
         {
             var directives = _context.Directives;
             var model = await directives.ProjectTo<DirectiveDto>(_mapper.ConfigurationProvider).ToListAsync();
-
+             model.ForEach((model) => {
+                model.NumberOfExpenses = model.Expenses.Count;
+                model.TotalCostOfExpenses = GetTotalCost(model.Expenses.ToList());
+            });
             return Ok(model);
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
@@ -49,6 +52,15 @@ namespace Api.Controllers
             if (directive == null) return NotFound();
 
             return directive;
+        }
+        public int GetTotalCost(List<ExpenseDto> userExpenses)
+        {
+            int total = 0;
+            for (int i = 0; i < userExpenses.Count; i++)
+            {
+                total += userExpenses[i].Cost;
+            }
+            return total;
         }
     }
 }

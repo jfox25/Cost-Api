@@ -119,13 +119,14 @@ namespace Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-
+                    ClockSkew = TimeSpan.Zero
                 };
             });
             services.AddAuthorization(opt => {
               opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
             });
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -145,6 +146,9 @@ namespace Api
             // app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(policy => policy.AllowCredentials().AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+
             app.UseAuthentication();
 
             app.UseAuthorization();

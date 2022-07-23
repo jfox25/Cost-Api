@@ -42,7 +42,7 @@ namespace Api.Controllers
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ExpenseDto>> GetExpense(int id)
+        public async Task<ActionResult<ExpenseDetailDto>> GetExpense(int id)
         {
              var expense = await _context.Expenses
                 .Where(x => x.ExpenseId == id)
@@ -51,7 +51,18 @@ namespace Api.Controllers
 
             if (expense == null) return NotFound();
 
-            return expense;
+            var expenseDetailDto = new ExpenseDetailDto() {
+                Id = expense.ExpenseId,
+                Date = expense.Date,
+                Category = expense.CategoryName,
+                Directive = expense.DirectiveName,
+                Business = expense.BusinessName,
+                RecurringExpense = (expense.IsRecurringExpense) ? "Yes" : "No",
+                FrequentId = (expense.FrequentId == 0) ? "No Frequent Used" : expense.FrequentId.ToString(),
+                Cost = expense.Cost
+            };
+
+            return expenseDetailDto;
         }
 
         [Authorize(AuthenticationSchemes = "Bearer")]
@@ -60,20 +71,46 @@ namespace Api.Controllers
         {
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
-            if(addExpenseDto.LocationId == 0)
+            Expense expense = new Expense();
+            if(addExpenseDto.FrequentId != 0)
             {
-                addExpenseDto.LocationId = await PostLocationAsync(addExpenseDto.LocationName, currentUser);
+                 var frequent =  await _context.Frequents
+                .Where(x => x.FrequentId == addExpenseDto.FrequentId)
+                .SingleOrDefaultAsync();
+                 expense = new Expense() {
+                    BusinessId = frequent.BusinessId,
+                    Date = DateTime.Parse(addExpenseDto.Date),
+                    DirectiveId = frequent.DirectiveId,
+                    CategoryId = frequent.CategoryId,
+                    Cost = frequent.Cost,
+                    FrequentId = frequent.FrequentId,
+                    IsRecurringExpense = frequent.IsRecurringExpense,
+                    User = currentUser
+                };
+            } else {
+                if(addExpenseDto.BusinessId == 0)
+                {
+                    addExpenseDto.BusinessId = await PostBusinessAsync(addExpenseDto.BusinessName, currentUser);
+                }
+                if(addExpenseDto.CategoryId == 0)
+                {
+                    addExpenseDto.CategoryId = await PostCategoryAsync(addExpenseDto.CategoryName, currentUser);
+                }
+                if(addExpenseDto.IsRecurringExpense)
+                {
+                    addExpenseDto.FrequentId = await PostFrequentAsync(addExpenseDto, currentUser);
+                }
+                expense = new Expense() {
+                    BusinessId = addExpenseDto.BusinessId,
+                    Date = DateTime.Parse(addExpenseDto.Date),
+                    DirectiveId = addExpenseDto.DirectiveId,
+                    CategoryId = addExpenseDto.CategoryId,
+                    Cost = addExpenseDto.Cost,
+                    FrequentId = addExpenseDto.FrequentId,
+                    User = currentUser,
+                    IsRecurringExpense = addExpenseDto.IsRecurringExpense
+                };
             }
-            Expense expense = new Expense() {
-              LocationId = addExpenseDto.LocationId,
-              Date = DateTime.Parse(addExpenseDto.Date),
-              DirectiveId = addExpenseDto.DirectiveId,
-              CategoryId = addExpenseDto.CategoryId,
-              Cost = addExpenseDto.Cost,
-              FrequentId = addExpenseDto.FrequentId,
-              User = currentUser
-            };
-            if(expense.FrequentId != 0) expense.IsRecurringExpense = true;
             _context.Expenses.Add(expense);
             await _context.SaveChangesAsync();
             await _analyticService.UpdateAnalytics(currentUser, expense);
@@ -126,16 +163,55 @@ namespace Api.Controllers
             return NoContent();
         }
 
-        public async Task<int> PostLocationAsync(string locationName, ApplicationUser user)
+        private async Task<int> PostBusinessAsync(string businessName, ApplicationUser user)
         {
-            Location location = new Location() {Name = locationName, User = user};
-            _context.Locations.Add(location);
+            Business business = new Business() {Name = businessName, User = user};
+            _context.Businesses.Add(business);
             await _context.SaveChangesAsync();
-            return location.LocationId;
+            return business.BusinessId;
         }
         private bool ExpenseExists(int id)
         {
             return _context.Expenses.Any(e => e.ExpenseId == id);
+        }
+
+        private async Task<int> PostCategoryAsync(string categoryName, ApplicationUser user)
+        {
+            if(categoryName == null) return 0;
+            Category category = new Category() {Name = categoryName, User = user};
+            var thisCategory = await _context.Categories
+                .Where(e => e.Name.ToLower() == categoryName.ToLower())
+                .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+            if(thisCategory != null) return thisCategory.CategoryId;
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
+            return category.CategoryId;
+        }
+
+        private async Task<int> PostFrequentAsync(AddExpenseDto expenseDto, ApplicationUser user)
+        {
+            if(expenseDto.FrequentName == null) return 0;
+            Frequent frequent = new Frequent() 
+            {
+                Name = expenseDto.FrequentName, 
+                BusinessId = expenseDto.BusinessId,
+                DirectiveId = expenseDto.DirectiveId,
+                CategoryId = expenseDto.CategoryId,
+                Cost = expenseDto.Cost,
+                IsRecurringExpense = expenseDto.IsRecurringExpense,
+                BilledEvery = expenseDto.BilledEvery,
+                LastUsedDate = DateTime.Parse(expenseDto.Date),
+                User = user
+            };
+            var thisFrequent = await _context.Frequents
+                .Where(e => e.Name.ToLower() == frequent.Name.ToLower())
+                .ProjectTo<FrequentDto>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+            if(thisFrequent != null) return thisFrequent.FrequentId;
+            _context.Frequents.Add(frequent);
+            await _context.SaveChangesAsync();
+            return frequent.FrequentId;
         }
     }
 }

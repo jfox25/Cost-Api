@@ -6,7 +6,7 @@ namespace Api.Dto
 {
     public class LookupDto
     {
-        public List<LocationLookupDto> Locations { get; set; }
+        public List<BusinessLookupDto> Businesss { get; set; }
         public List<DirectiveLookupDto> Directives { get; set; }
         public List<CategoryLookupDto> Categories { get; set; }
     }
