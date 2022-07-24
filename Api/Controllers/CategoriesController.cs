@@ -72,7 +72,7 @@ namespace Api.Controllers
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
 
-            bool categoryWithSameName = _context.Categories.Any(e => e.Name.ToLower() == addCategoryDto.Name.ToLower());
+            bool categoryWithSameName = _context.Categories.Any(e => e.Name.ToLower() == addCategoryDto.Name.ToLower() && e.User.Id == currentUser.Id);
             if(categoryWithSameName) return BadRequest($"A Location with this same name({addCategoryDto.Name}) already exists");
             
             Category category = new Category() {

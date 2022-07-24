@@ -26,6 +26,8 @@ namespace Api.Services
             _context.RemoveRange(userFrequentsToDelete);
             var userCategoriesToDelete =  _context.Categories.Where(category => category.User.Id == user.Id).ToList();
             _context.RemoveRange(userCategoriesToDelete);
+            var userGeneralAnalyticsToDelete =  _context.GeneralAnalytics.Where(analytic => analytic.User.Id == user.Id).ToList();
+            _context.RemoveRange(userGeneralAnalyticsToDelete);
         }
 
         public async Task UpdateUserStatus()

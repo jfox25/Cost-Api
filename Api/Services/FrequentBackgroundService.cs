@@ -10,12 +10,14 @@ namespace Api.Services
     public class FrequentBackgroundService : IFrequentBackgroundService
     {
         private readonly ApiContext _context;
-        public FrequentBackgroundService(ApiContext context)
+        private readonly AnalyticService _analyticService;
+        public FrequentBackgroundService(ApiContext context, AnalyticService analyticService)
         {
             _context = context;
+            _analyticService = analyticService;
         }
 
-        public void CreateExpense(Frequent frequent, DateTime today )
+        public async Task CreateExpense(Frequent frequent, DateTime today )
         {
             Console.WriteLine("Adding Expense From Frequent...");
              Expense expense = new Expense() {
@@ -29,11 +31,13 @@ namespace Api.Services
               User = frequent.User
             };
             _context.Expenses.Add(expense);
+            await _context.SaveChangesAsync();
+            await _analyticService.UpdateAnalytics(expense.User, expense);
         }
 
-        public async Task CreateFrequentExpenses()
+        public async Task CreateFrequentExpenses(DateTime today)
         {
-            DateTime today = DateTime.Now;
+            // DateTime today = DateTime.Now;
             var activeUsers = _context.Users.Where(user => user.IsActive == true).ToList();
             Console.WriteLine($"ActiveUserListCount = {activeUsers.Count}");
             for (int i = 0; i < activeUsers.Count; i++)
@@ -46,7 +50,7 @@ namespace Api.Services
                     {
                         if(frequents[x].LastUsedDate.Month <= today.AddMonths(frequents[x].BilledEvery * -1).Month && frequents[x].IsRecurringExpense)
                         {
-                            CreateExpense(frequents[x], today); 
+                            await CreateExpense(frequents[x], today); 
                             frequents[x].LastUsedDate = new DateTime(today.Year, today.Month, frequents[x].LastUsedDate.Day);
                             _context.Frequents.Update(frequents[x]);
                         } 

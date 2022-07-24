@@ -57,7 +57,8 @@ namespace Api.Controllers
         var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
         if (!roleResult.Succeeded) return BadRequest(result.Errors);
-
+        AddDirectivesToUser(user);
+        await _context.SaveChangesAsync();
         return new UserDto
         {
             Username = user.UserName,
@@ -199,6 +200,25 @@ namespace Api.Controllers
             user.RefreshToken = newRefreshToken.Token;
             user.TokenCreated = newRefreshToken.Created;
             user.TokenExpires = newRefreshToken.Expires;
+        }
+
+        private void AddDirectivesToUser(ApplicationUser user)
+        {
+           var overheadDirective = new Directive() {
+            Name = "Overhead",
+            User = user
+           };
+           var investmentDirective = new Directive() {
+            Name = "Investment",
+            User = user
+           };
+           var discretionaryDirective = new Directive() {
+            Name = "Discretionary",
+            User = user
+           };
+           _context.Directives.Add(overheadDirective);
+           _context.Directives.Add(investmentDirective);
+           _context.Directives.Add(discretionaryDirective);
         }
 
     }

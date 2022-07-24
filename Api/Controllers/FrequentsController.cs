@@ -51,8 +51,8 @@ namespace Api.Controllers
             if (frequent == null) return NotFound();
 
             var frequentDetailDto = new FrequentDetailDto() {
-                Name = frequent.Name,
                 Id = frequent.FrequentId,
+                Name = frequent.Name,
                 Category = frequent.CategoryName,
                 Business = frequent.BusinessName,
                 Directive = frequent.DirectiveName,
@@ -72,6 +72,9 @@ namespace Api.Controllers
         {
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
+
+            bool frequentWithSameName = _context.Frequents.Any(e => e.Name.ToLower() == addFrequentDto.Name.ToLower() && e.User.Id == currentUser.Id);
+            if(frequentWithSameName) return BadRequest($"A Location with this same name({addFrequentDto.Name}) already exists");
 
             Frequent frequent = new Frequent() {
               Name = addFrequentDto.Name,

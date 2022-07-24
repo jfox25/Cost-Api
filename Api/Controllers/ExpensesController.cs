@@ -50,10 +50,11 @@ namespace Api.Controllers
                 .SingleOrDefaultAsync();
 
             if (expense == null) return NotFound();
-
+            DateTime detailDate;
+            var isValidDate = DateTime.TryParse(expense.Date, out detailDate);
             var expenseDetailDto = new ExpenseDetailDto() {
                 Id = expense.ExpenseId,
-                Date = expense.Date,
+                Date = (isValidDate) ? detailDate.ToShortDateString() : expense.Date,
                 Category = expense.CategoryName,
                 Directive = expense.DirectiveName,
                 Business = expense.BusinessName,
@@ -166,7 +167,13 @@ namespace Api.Controllers
 
         private async Task<int> PostBusinessAsync(string businessName, ApplicationUser user)
         {
+            if(businessName == null) return 0;
             Business business = new Business() {Name = businessName, User = user};
+            var thisBusiness = await _context.Businesses
+                    .Where(e => e.Name.ToLower() == businessName.ToLower() && e.User.Id == user.Id)
+                    .ProjectTo<BusinessDto>(_mapper.ConfigurationProvider)
+                    .SingleOrDefaultAsync();
+            if(thisBusiness != null) return thisBusiness.CategoryId;
             _context.Businesses.Add(business);
             await _context.SaveChangesAsync();
             return business.BusinessId;
@@ -181,7 +188,7 @@ namespace Api.Controllers
             if(categoryName == null) return 0;
             Category category = new Category() {Name = categoryName, User = user};
             var thisCategory = await _context.Categories
-                .Where(e => e.Name.ToLower() == categoryName.ToLower())
+                .Where(e => e.Name.ToLower() == categoryName.ToLower() && e.User.Id == user.Id)
                 .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
             if(thisCategory != null) return thisCategory.CategoryId;

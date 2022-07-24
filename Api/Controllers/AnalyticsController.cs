@@ -66,9 +66,9 @@ namespace Api.Controllers
             var generalAnalyticDetailDto = new GeneralAnalyticDetailDto() {
                 Id = generalAnalytic.GeneralAnalyticId,
                 Date = generalAnalytic.Date.ToShortDateString(),
-                MostExpensiveCategory = generalAnalytic.CategoryName,
-                MostExpensiveBusiness = generalAnalytic.BusinessName,
-                MostExpensiveDirective = generalAnalytic.DirectiveName,
+                TopCategory = generalAnalytic.CategoryName,
+                TopBusiness = generalAnalytic.BusinessName,
+                TopDirective = generalAnalytic.DirectiveName,
                 NumberOfExpenses = generalAnalytic.NumberOfExpenses,
                 TotalCostOfExpenses = generalAnalytic.TotalCostOfExpenses
             };

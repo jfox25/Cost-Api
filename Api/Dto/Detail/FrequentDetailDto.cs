@@ -4,8 +4,8 @@ namespace Api.Dto
 {
     public class FrequentDetailDto 
     {
-        public string Name { get; set; }
         public int Id { get; set; }
+        public string Name { get; set; }
         public string Business { get; set; }
         public string Directive { get; set; }
         public string Category { get; set; }

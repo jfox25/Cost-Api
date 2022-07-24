@@ -32,7 +32,9 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DirectiveDto>>> GetDirectives()
         {
-            var directives = _context.Directives;
+            var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = await _userManager.FindByNameAsync(username);
+            var directives = _context.Directives.Where(directive => directive.User.Id == currentUser.Id);
             var model = await directives.ProjectTo<DirectiveDto>(_mapper.ConfigurationProvider).ToListAsync();
              model.ForEach((model) => {
                 model.NumberOfExpenses = model.Expenses.Count;
@@ -48,7 +50,6 @@ namespace Api.Controllers
                 .Where(x => x.DirectiveId == id)
                 .ProjectTo<DirectiveDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
-
             if (directive == null) return NotFound();
 
             return directive;

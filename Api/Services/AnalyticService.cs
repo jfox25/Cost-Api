@@ -19,7 +19,7 @@ namespace Api.Services
         //Determines wether to create or update a general analytic
         public async Task UpdateAnalytics(ApplicationUser currentUser, Expense changedExpense)
         {
-            var existingGeneralAnalytic = _context.GeneralAnalytics.FirstOrDefault(analytic => analytic.Date.Month == changedExpense.Date.Month && analytic.Date.Year == changedExpense.Date.Year);
+            var existingGeneralAnalytic = _context.GeneralAnalytics.FirstOrDefault(analytic => analytic.Date.Month == changedExpense.Date.Month && analytic.Date.Year == changedExpense.Date.Year && analytic.User.Id == currentUser.Id);
             List<Expense> userExpenses = _context.Expenses.Where(expense => expense.User.Id == currentUser.Id && expense.Date.Month == changedExpense.Date.Month).ToList();
 
             if (existingGeneralAnalytic == null)

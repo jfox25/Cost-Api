@@ -77,7 +77,7 @@ namespace Api.Controllers
             {
                 addBusinessDto.CategoryId = await PostCategoryAsync(addBusinessDto.CategoryName, currentUser);
             }
-            bool BusinessWithSameName = _context.Businesses.Any(e => e.Name.ToLower() == addBusinessDto.Name.ToLower());
+            bool BusinessWithSameName = _context.Businesses.Any(e => e.Name.ToLower() == addBusinessDto.Name.ToLower() && e.User.Id == currentUser.Id);
             if(BusinessWithSameName) return BadRequest($"A Business with this same name({addBusinessDto.Name}) already exists");
             
             Business Business = new Business() {
