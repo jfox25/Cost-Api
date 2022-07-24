@@ -36,9 +36,16 @@ namespace Api.Services
                 existingGeneralAnalytic.MostExpensiveDirectiveId = MostExpensiveLookup(userExpenses, "DirectiveId", changedExpense, currentUser);
                 existingGeneralAnalytic.MostExpensiveCategoryId = MostExpensiveLookup(userExpenses, "CategoryId", changedExpense, currentUser);
                 existingGeneralAnalytic.MostExpensiveBusinessId = MostExpensiveLookup(userExpenses, "BusinessId", changedExpense, currentUser);
-                existingGeneralAnalytic.DirectiveName = _context.Directives.FirstOrDefault(directive => directive.DirectiveId == existingGeneralAnalytic.MostExpensiveDirectiveId).Name;
-                existingGeneralAnalytic.CategoryName = _context.Categories.FirstOrDefault(category => category.CategoryId == existingGeneralAnalytic.MostExpensiveCategoryId).Name;
-                existingGeneralAnalytic.BusinessName = _context.Businesses.FirstOrDefault(Business => Business.BusinessId == existingGeneralAnalytic.MostExpensiveBusinessId).Name;
+                if(existingGeneralAnalytic.NumberOfExpenses != 0)
+                {
+                    existingGeneralAnalytic.DirectiveName = _context.Directives.FirstOrDefault(directive => directive.DirectiveId == existingGeneralAnalytic.MostExpensiveDirectiveId).Name;
+                    existingGeneralAnalytic.CategoryName = _context.Categories.FirstOrDefault(category => category.CategoryId == existingGeneralAnalytic.MostExpensiveCategoryId).Name;
+                    existingGeneralAnalytic.BusinessName = _context.Businesses.FirstOrDefault(Business => Business.BusinessId == existingGeneralAnalytic.MostExpensiveBusinessId).Name;
+                }else {
+                    existingGeneralAnalytic.DirectiveName = "None";
+                    existingGeneralAnalytic.CategoryName = "None";
+                    existingGeneralAnalytic.BusinessName = "None";
+                }
                 _context.GeneralAnalytics.Update(existingGeneralAnalytic);
             }
             await _context.SaveChangesAsync();
@@ -190,6 +197,7 @@ namespace Api.Services
         //Gets the total cost of a group of expenses
         public int GetTotalCost(List<Expense> userExpenses)
         {
+            if(userExpenses.Count == 0) return 0;
             int total = 0;
             for (int i = 0; i < userExpenses.Count; i++)
             {

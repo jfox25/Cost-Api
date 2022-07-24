@@ -87,6 +87,7 @@ namespace Api.Controllers
                     IsRecurringExpense = frequent.IsRecurringExpense,
                     User = currentUser
                 };
+                frequent.LastUsedDate = expense.Date;
             } else {
                 if(addExpenseDto.BusinessId == 0)
                 {
