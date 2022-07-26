@@ -70,7 +70,8 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> PostExpense(AddExpenseDto addExpenseDto)
         {
-            if(DateTime.Parse(addExpenseDto.Date).Month > DateTime.Now.Month + 1)
+            DateTime date = DateTime.Parse(addExpenseDto.Date);
+            if(date.Month > DateTime.Now.Month + 1 && date.Year >= DateTime.Now.Year)
             {
                 return BadRequest("Expenses cannot be added more than 1 month into the future.");
             }
@@ -106,6 +107,7 @@ namespace Api.Controllers
                 {
                     if(addExpenseDto.BilledEvery == 0) return BadRequest("Billed Every must be greater than one");
                     addExpenseDto.FrequentId = await PostFrequentAsync(addExpenseDto, currentUser);
+                    if(addExpenseDto.FrequentId == -1) return BadRequest($"A Frequent with the name {addExpenseDto.FrequentName} already exsists.");
                 }
                 expense = new Expense() {
                     BusinessId = addExpenseDto.BusinessId,
@@ -178,7 +180,7 @@ namespace Api.Controllers
                     .Where(e => e.Name.ToLower() == businessName.ToLower() && e.User.Id == user.Id)
                     .ProjectTo<BusinessDto>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync();
-            if(thisBusiness != null) return thisBusiness.CategoryId;
+            if(thisBusiness != null) return thisBusiness.BusinessId;
             _context.Businesses.Add(business);
             await _context.SaveChangesAsync();
             return business.BusinessId;
@@ -218,10 +220,10 @@ namespace Api.Controllers
                 User = user
             };
             var thisFrequent = await _context.Frequents
-                .Where(e => e.Name.ToLower() == frequent.Name.ToLower())
+                .Where(e => e.Name.ToLower() == frequent.Name.ToLower() && e.User.Id == user.Id)
                 .ProjectTo<FrequentDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
-            if(thisFrequent != null) return thisFrequent.FrequentId;
+            if(thisFrequent != null) return -1;
             _context.Frequents.Add(frequent);
             await _context.SaveChangesAsync();
             return frequent.FrequentId;

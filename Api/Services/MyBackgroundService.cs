@@ -25,7 +25,7 @@ namespace Api.Services
                 using(var scope = _serviceProvider.CreateScope())
                 {
                     // DateTime today = DateTime.Now;
-                    DateTime today = new DateTime(2022, 8, 1); 
+                    DateTime today = new DateTime(2022, 9, 1); 
                     if(today.Day == 1)
                     {
                         Console.WriteLine("Starting Background Services");

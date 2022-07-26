@@ -70,12 +70,11 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> PostFrequent(AddFrequentDto addFrequentDto)
         {
-            await Task.Delay(5000);
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
 
             bool frequentWithSameName = _context.Frequents.Any(e => e.Name.ToLower() == addFrequentDto.Name.ToLower() && e.User.Id == currentUser.Id);
-            if(frequentWithSameName) return BadRequest($"A Location with this same name({addFrequentDto.Name}) already exists");
+            if(frequentWithSameName) return BadRequest($"A Frrequent with this same name({addFrequentDto.Name}) already exists");
 
             Frequent frequent = new Frequent() {
               Name = addFrequentDto.Name,
@@ -92,9 +91,10 @@ namespace Api.Controllers
                 frequent.LastUsedDate = DateTime.Now;
             }else {
                 if(addFrequentDto.BilledEvery == 0) return BadRequest("Billed Every must be greater than one");
-                if(DateTime.Parse(addFrequentDto.LastUsedDate).Month > DateTime.Now.Month + 1)
+                DateTime date = DateTime.Parse(addFrequentDto.LastUsedDate);
+                if(date.Month == DateTime.Now.Month && date.Year != DateTime.Now.Year)
                 {
-                    return BadRequest("Last Used Date cannot be more than 1 month into the future.");
+                    return BadRequest("Last Used Date has to be in the current Month");
                 }
                 frequent.LastUsedDate = DateTime.Parse(addFrequentDto.LastUsedDate);
             }

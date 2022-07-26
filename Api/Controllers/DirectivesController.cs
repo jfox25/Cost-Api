@@ -32,7 +32,6 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DirectiveDto>>> GetDirectives()
         {
-            // await Task.Delay(10000);
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
             var directives = _context.Directives.Where(directive => directive.User.Id == currentUser.Id);
@@ -55,6 +54,7 @@ namespace Api.Controllers
 
             return directive;
         }
+        [ApiExplorerSettings(IgnoreApi = true)]
         public decimal GetTotalCost(List<ExpenseDto> userExpenses)
         {
             decimal total = 0;

@@ -151,7 +151,7 @@ namespace Api.Controllers
             if(categoryName == null) return 0;
             Category category = new Category() {Name = categoryName, User = user};
             var thisCategory = await _context.Categories
-                .Where(e => e.Name.ToLower() == categoryName.ToLower())
+                .Where(e => e.Name.ToLower() == categoryName.ToLower() && e.User.Id == user.Id)
                 .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
             if(thisCategory != null) return thisCategory.CategoryId;

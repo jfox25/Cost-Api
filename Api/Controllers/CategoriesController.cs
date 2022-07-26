@@ -69,7 +69,6 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> PostCategory(AddCategoryDto addCategoryDto)
         {
-            await Task.Delay(10000);
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
 
@@ -89,7 +88,7 @@ namespace Api.Controllers
         public async Task<IActionResult> PutCategory(int id, CategoryDto category)
         {
             bool categoryWithSameName = _context.Categories.Any(e => e.Name.ToLower() == category.Name.ToLower());
-            if(categoryWithSameName) return BadRequest($"A Location with this same name({category.Name}) already exists");
+            if(categoryWithSameName) return BadRequest($"A Category with this same name({category.Name}) already exists");
 
             var thisCategory = await _context.Categories.FindAsync(id);
             if(thisCategory == null) return NotFound();
@@ -129,6 +128,7 @@ namespace Api.Controllers
         {
             return _context.Categories.Any(e => e.CategoryId == id);
         }
+        [ApiExplorerSettings(IgnoreApi = true)]
         public decimal GetTotalCost(List<ExpenseDto> userExpenses)
         {
             decimal total = 0;

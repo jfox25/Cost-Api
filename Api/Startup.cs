@@ -21,6 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Api.Services;
 using Api.Helpers;
+using System.Reflection;
 
 namespace Api
 {
@@ -47,68 +48,53 @@ namespace Api
             services.AddScoped<UserBackgroundService>();
             services.AddScoped<FrequentBackgroundService>();
             services.AddHostedService<MyBackgroundService>();
-            // services.AddSwaggerGen(c =>
-            // {
-            //     c.SwaggerDoc("v1", new OpenApiInfo
-            //     {
-            //         Version = "v1",
-            //         Title = "Expense Api",
-            //         Description = "API for expenses",
-            //         Contact = new OpenApiContact
-            //         {
-            //             Name = "James Fox",
-            //             Email = "jimmyfox00@gmail.com",
-            //         }
-            //     });
-            //     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            //     {
-            //         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-            //         Description = "Please insert token",
-            //         Name = "Authorization",
-            //         Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-            //         BearerFormat = "JWT",
-            //         Scheme = "bearer"
-            //     });
-            //     c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement{
-            //     {
-            //         new OpenApiSecurityScheme{
-            //             Reference = new OpenApiReference {
-            //                 Type=ReferenceType.SecurityScheme,
-            //                 Id="Bearer"
-            //             }
-            //         },
-            //         new string[]{}
-            //     }
-
-            //   });
-
-            //     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            //     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            //     c.IncludeXmlComments(xmlPath);
-            // });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Cost Api",
+                    Description = "API for expence tracker application, Cost",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "James Fox",
+                        Email = "jimmyfox00@gmail.com",
+                    }
+                });
+                
+                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Description = "Please insert token",
+                    Name = "Authorization",
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement{
+                {
+                    new OpenApiSecurityScheme{
+                        Reference = new OpenApiReference {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
+              });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
             services.AddDbContext<ApiContext>(options =>
             {
                 options.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"]));
-
             });
             services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApiContext>()
             .AddDefaultTokenProviders();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 0;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredUniqueChars = 0;
-            });
             services.AddScoped<ITokenService, TokenService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -139,11 +125,11 @@ namespace Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CretaceousPark API V");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cost Api v1");
                 c.RoutePrefix = string.Empty;
             });
 
-            // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
