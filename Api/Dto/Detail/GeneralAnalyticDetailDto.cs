@@ -10,7 +10,7 @@ namespace Api.Dto
         public int Id { get; set; }
         public string Date { get; set; }
         public int NumberOfExpenses { get; set; }
-        public int TotalCostOfExpenses { get; set; }
+        public decimal TotalCostOfExpenses { get; set; }
         public string TopBusiness { get; set; }
         public string TopDirective { get; set; }
         public string TopCategory { get; set; }

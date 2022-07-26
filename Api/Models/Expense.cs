@@ -15,7 +15,7 @@ namespace Api.Models
         public virtual Category Category { get; set; }
         public bool IsRecurringExpense { get; set; }
         public int FrequentId { get; set; }
-        public int Cost { get; set; }
+        public decimal Cost { get; set; }
         public virtual ApplicationUser User { get; set; }
 
     }

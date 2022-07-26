@@ -11,7 +11,7 @@ namespace Api.Dto
         public int CategoryId { get; set; }
         public string CategoryName{ get; set; }
         public int NumberOfExpenses { get; set; }
-        public int TotalCostOfExpenses { get; set; }
+        public decimal TotalCostOfExpenses { get; set; }
         public ICollection<ExpenseDto> Expenses { get; set; }
     }
 }

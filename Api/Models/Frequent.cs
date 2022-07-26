@@ -13,7 +13,7 @@ namespace Api.Models
         public virtual Directive Directive { get; set; }
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
-        public int Cost { get; set; }
+        public decimal Cost { get; set; }
         public bool IsRecurringExpense { get; set; }
         public int BilledEvery { get; set; } 
         public DateTime LastUsedDate { get; set; }

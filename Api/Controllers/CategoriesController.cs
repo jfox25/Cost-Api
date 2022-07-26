@@ -69,6 +69,7 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> PostCategory(AddCategoryDto addCategoryDto)
         {
+            await Task.Delay(10000);
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
 
@@ -128,9 +129,9 @@ namespace Api.Controllers
         {
             return _context.Categories.Any(e => e.CategoryId == id);
         }
-        public int GetTotalCost(List<ExpenseDto> userExpenses)
+        public decimal GetTotalCost(List<ExpenseDto> userExpenses)
         {
-            int total = 0;
+            decimal total = 0;
             for (int i = 0; i < userExpenses.Count; i++)
             {
                 total += userExpenses[i].Cost;

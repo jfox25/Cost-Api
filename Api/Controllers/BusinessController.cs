@@ -136,9 +136,9 @@ namespace Api.Controllers
             return _context.Businesses.Any(e => e.BusinessId == id);
         }
 
-        private int GetTotalCost(List<ExpenseDto> userExpenses)
+        private decimal GetTotalCost(List<ExpenseDto> userExpenses)
         {
-            int total = 0;
+            decimal total = 0;
             for (int i = 0; i < userExpenses.Count; i++)
             {
                 total += userExpenses[i].Cost;

@@ -70,6 +70,10 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> PostExpense(AddExpenseDto addExpenseDto)
         {
+            if(DateTime.Parse(addExpenseDto.Date).Month > DateTime.Now.Month + 1)
+            {
+                return BadRequest("Expenses cannot be added more than 1 month into the future.");
+            }
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
             Expense expense = new Expense();
@@ -100,6 +104,7 @@ namespace Api.Controllers
                 }
                 if(addExpenseDto.IsRecurringExpense)
                 {
+                    if(addExpenseDto.BilledEvery == 0) return BadRequest("Billed Every must be greater than one");
                     addExpenseDto.FrequentId = await PostFrequentAsync(addExpenseDto, currentUser);
                 }
                 expense = new Expense() {

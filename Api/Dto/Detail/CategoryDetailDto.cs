@@ -8,6 +8,6 @@ namespace Api.Dto
         public int Id { get; set; }
         public string Name { get; set; }
         public int NumberOfExpenses { get; set; }
-        public int TotalCostOfExpenses { get; set; }
+        public decimal TotalCostOfExpenses { get; set; }
     }
 }

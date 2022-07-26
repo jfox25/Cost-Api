@@ -70,6 +70,7 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> PostFrequent(AddFrequentDto addFrequentDto)
         {
+            await Task.Delay(5000);
             var username = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByNameAsync(username);
 
@@ -90,6 +91,11 @@ namespace Api.Controllers
             {
                 frequent.LastUsedDate = DateTime.Now;
             }else {
+                if(addFrequentDto.BilledEvery == 0) return BadRequest("Billed Every must be greater than one");
+                if(DateTime.Parse(addFrequentDto.LastUsedDate).Month > DateTime.Now.Month + 1)
+                {
+                    return BadRequest("Last Used Date cannot be more than 1 month into the future.");
+                }
                 frequent.LastUsedDate = DateTime.Parse(addFrequentDto.LastUsedDate);
             }
             _context.Frequents.Add(frequent);

@@ -9,6 +9,6 @@ namespace Api.Dto
         public string Name { get; set; }
         public string Category { get; set; }
         public int NumberOfExpenses { get; set; }
-        public int TotalCostOfExpenses { get; set; }
+        public decimal TotalCostOfExpenses { get; set; }
     }
 }

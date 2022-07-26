@@ -11,7 +11,7 @@ namespace Api.Dto
         public string Category{ get; set; }
         public string FrequentId { get; set; }
         public string RecurringExpense { get; set; }
-        public int Cost { get; set; }
+        public decimal Cost { get; set; }
         
     }
 }

@@ -10,7 +10,7 @@ namespace Api.Dto
         public int GeneralAnalyticId { get; set; }
         public DateTime Date { get; set; }
         public int NumberOfExpenses { get; set; }
-        public int TotalCostOfExpenses { get; set; }
+        public decimal TotalCostOfExpenses { get; set; }
         public int MostExpensiveBusinessId { get; set; }
         public string BusinessName { get; set; }
         public int MostExpensiveDirectiveId { get; set; }

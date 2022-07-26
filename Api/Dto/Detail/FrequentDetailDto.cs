@@ -9,7 +9,7 @@ namespace Api.Dto
         public string Business { get; set; }
         public string Directive { get; set; }
         public string Category { get; set; }
-        public int Cost { get; set; }
+        public decimal Cost { get; set; }
         public string RecurringExpense { get; set; }
         public string LastUsedDate { get; set; }
         public string BilledEvery { get; set; } 

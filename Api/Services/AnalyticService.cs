@@ -51,10 +51,6 @@ namespace Api.Services
             await _context.SaveChangesAsync();
         }
         //Creates a new General Analytic object and adds it to db
-
-        //  _context.Businesses.FirstOrDefault(Business => Business.BusinessId == model.MostExpensiveBusinessId).Name;
-        //  _context.Categories.FirstOrDefault(category => category.CategoryId == model.MostExpensiveCategoryId).Name;
-        //  _context.Directives.FirstOrDefault(directive => directive.DirectiveId == model.MostExpensiveDirectiveId).Name;
         public void CreateGeneralAnalytic(ApplicationUser user, Expense changedExpense)
         {
             GeneralAnalytic analytic = new GeneralAnalytic()
@@ -115,7 +111,7 @@ namespace Api.Services
         public List<LookupCount> BuildLookupCountCollection(List<Expense> sortedExpenses, string lookupIdProperty, ApplicationUser user)
         {
             List<LookupCount> lookupCollection = new List<LookupCount>();
-            int totalCostofLookupExpenses = 0;
+            decimal totalCostofLookupExpenses = 0;
             int totalNumberofLookupExpenses = 0;
             for (int i = 0; i < sortedExpenses.Count; i++)
             {
@@ -132,7 +128,7 @@ namespace Api.Services
             return lookupCollection;
         }
         //Creates the actual LookupCount object
-        public LookupCount CreateLookupCount(int LookupId, int TotalCostOfExpenses, int NumberOfExpenses, ApplicationUser user, string lookupTypeName)
+        public LookupCount CreateLookupCount(int LookupId, decimal TotalCostOfExpenses, int NumberOfExpenses, ApplicationUser user, string lookupTypeName)
         {
             LookupType lookupType = _context.LookupTypes.FirstOrDefault(x => x.LookupName == lookupTypeName);
             LookupCount lookupCount = new LookupCount()
@@ -195,10 +191,10 @@ namespace Api.Services
             }
         }
         //Gets the total cost of a group of expenses
-        public int GetTotalCost(List<Expense> userExpenses)
+        public decimal GetTotalCost(List<Expense> userExpenses)
         {
             if(userExpenses.Count == 0) return 0;
-            int total = 0;
+            decimal total = 0;
             for (int i = 0; i < userExpenses.Count; i++)
             {
                 total += userExpenses[i].Cost;
