@@ -3,9 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  <Target Name="PrePublishTarget" AfterTargets="Publish">
-  <Exec Command="dotnet ef database update" />
-</Target>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.0" />
@@ -25,5 +23,9 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" />
   </ItemGroup>
+
+  <!-- <Target Name="PrePublishTarget" AfterTargets="Publish">
+    <Exec Command="dotnet tool run dotnet-ef databse update" />
+  </Target> -->
 
 </Project>
