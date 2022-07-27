@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Models;
+using Api.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace Api
             {
                 var context = services.GetRequiredService<ApiContext>();
                 await context.Database.MigrateAsync();
+                await Seed.SeedDb(context);
             }
             catch (Exception ex)
             {
