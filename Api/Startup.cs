@@ -123,7 +123,7 @@ namespace Api
 
             app.UseRouting();
 
-            app.UseCors(policy => policy.AllowCredentials().AllowAnyHeader().AllowAnyMethod().WithOrigins("https://www.cost-client.com"));
+            app.UseCors(policy => policy.AllowCredentials().AllowAnyHeader().AllowAnyMethod().WithOrigins("{YOUR_CLIENT_URL}"));
 
             app.UseAuthentication();
 
