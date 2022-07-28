@@ -6,7 +6,7 @@
 <p align="center">By <a href="https://github.com/jfox25">James Fox</a></p>
 
 ## About
-Cost Api is a .Net 5 Web Api. It provides all necessary data to the <a href="https://github.com/jfox25">Cost Client</a>. The Api was built using a mySql database, but switched to a postgresql database for production. Cost Api provides authentication functionality to the client using JWT tokens. Background services are implemented to manage users and their expenses. For the best experience, use in conjunction with the Cost Client.
+Cost Api is a .Net 5 Web Api. It provides all necessary data to the <a href="https://github.com/jfox25/Cost-Client">Cost Client</a>. The Api was built using a mySql database, but switched to a postgresql database for production. Cost Api provides authentication functionality to the client using JWT tokens. Background services are implemented to manage users and their expenses. For the best experience, use in conjunction with the Cost Client.
 
 
 ## Technologies Used
