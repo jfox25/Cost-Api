@@ -123,7 +123,7 @@ namespace Api
 
             app.UseRouting();
 
-            app.UseCors(policy => policy.AllowCredentials().AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+            app.UseCors(policy => policy.AllowCredentials().AllowAnyHeader().AllowAnyMethod().WithOrigins("https://www.cost-client.com"));
 
             app.UseAuthentication();
 
